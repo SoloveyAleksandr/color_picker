@@ -1,0 +1,53 @@
+@import '../../сonstant';
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.lockBtn {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background-color: $white20;
+  color: $white;
+}
+
+.smallBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  background-color: $white20;
+  color: $white;
+}
+
+.btnContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.colorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: $white20;
+  pointer-events: none;
+}
+
+.color {
+  color: $white;
+}
