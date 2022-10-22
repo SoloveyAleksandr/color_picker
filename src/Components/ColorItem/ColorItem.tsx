@@ -1,47 +1,79 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { HiRefresh } from 'react-icons/hi';
-import { BiCopy } from 'react-icons/bi';
+import { BiCopy, BiTrash } from 'react-icons/bi';
 import { AiOutlineLock, AiOutlineUnlock } from 'react-icons/ai';
 import { motion } from 'framer-motion';
+import tinycolor from "tinycolor2";
 
 import styles from './ColorItem.module.scss';
+import { IColorItem } from "../../types";
 
-interface IColorItem {
-  color: string,
-  isLocked: boolean,
+interface IColorItemProp {
+  item: IColorItem,
+  index: number,
+  setLock: (id: string) => void,
+  copyHandler: (color: string) => void,
+  changeColor: (id: string) => void,
+  deleteHandler: (id: string) => void,
+  constraintsRef: React.RefObject<Element>,
 }
 
-const ColorItem: FC<IColorItem> = ({
-  color,
-  isLocked,
+const ColorItem: FC<IColorItemProp> = ({
+  item,
+  index,
+  setLock,
+  copyHandler,
+  changeColor,
+  deleteHandler,
+  constraintsRef,
 }) => {
+  const [isdragged, setIsDragged] = useState(false);
+  const isDark = tinycolor(item.color).isDark();
+
   return (
     <motion.div
+      dragConstraints={constraintsRef}
+      dragSnapToOrigin
       drag={'x'}
-      className={styles.wrapper}
-      style={{ backgroundColor: color }}>
-      <div className={styles.topContainer}>
-        <div className={styles.btnContainer}>
-          <button className={styles.smallBtn}>
-            <HiRefresh />
+      onDragStart={() => setIsDragged(true)}
+      onDragEnd={() => setIsDragged(false)}
+      style={{
+        backgroundColor: item.color,
+        zIndex: isdragged ? 2 : 1,
+        // height: name.length * 10
+      }}
+      className={styles.wrapper}>
+      <div className={`${styles.innerContainer} ${styles.topContainer}`}>
+        <button
+          onClick={() => deleteHandler(item.id)}
+          className={`${styles.smallBtn} ${isDark ? styles._dark : styles._light}`}>
+          <BiTrash size={18} />
+        </button>
+        <div className={`${styles.colorContainer} ${isDark ? styles._dark : styles._light}`}>
+          <button
+            onClick={() => changeColor(item.id)}
+            className={`${styles.colorBtn} ${isDark ? styles._dark : styles._light}`}>
+            <HiRefresh size={18} />
           </button>
-          <button className={styles.smallBtn}>
-            <BiCopy />
-          </button>
-        </div>
-        <div className={styles.colorContainer}>
           <span className={styles.color}>
-            {color}
+            {item.color}
           </span>
+          <button
+            onClick={() => copyHandler(item.color)}
+            className={`${styles.colorBtn} ${isDark ? styles._dark : styles._light}`}>
+            <BiCopy size={18} />
+          </button>
         </div>
       </div>
-      <div className={styles.bottomContainer}>
-        <button className={styles.lockBtn}>
+      <div className={styles.innerContainer}>
+        <button
+          className={`${styles.lockBtn} ${isDark ? styles._dark : styles._light}`}
+          onClick={() => setLock(item.id)}>
           {
-            isLocked ?
-              <AiOutlineLock size={28} />
+            item.isLocked ?
+              <AiOutlineLock size={24} />
               :
-              <AiOutlineUnlock size={28} />
+              <AiOutlineUnlock size={24} />
           }
         </button>
       </div>
