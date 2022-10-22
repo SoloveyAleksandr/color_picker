@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useRef } from "react";
 import { HiRefresh } from 'react-icons/hi';
 import { BiCopy, BiTrash } from 'react-icons/bi';
 import { AiOutlineLock, AiOutlineUnlock } from 'react-icons/ai';
@@ -28,7 +28,12 @@ const ColorItem: FC<IColorItemProp> = ({
   constraintsRef,
 }) => {
   const [isdragged, setIsDragged] = useState(false);
+
   const isDark = tinycolor(item.color).isDark();
+
+  const itemRef: React.Ref<HTMLDivElement> = useRef(null);
+
+  const log = (e: any) => console.log(e);
 
   return (
     <motion.div
@@ -37,10 +42,15 @@ const ColorItem: FC<IColorItemProp> = ({
       drag={'x'}
       onDragStart={() => setIsDragged(true)}
       onDragEnd={() => setIsDragged(false)}
+      ref={itemRef}
+      //
+      //  если оффлет положительный прибавлять / отнимать
+      //
+      //
+      onDrag={(e, i) => log((itemRef.current?.offsetLeft || 0) - Math.abs(i.offset.x))}
       style={{
         backgroundColor: item.color,
         zIndex: isdragged ? 2 : 1,
-        // height: name.length * 10
       }}
       className={styles.wrapper}>
       <div className={`${styles.innerContainer} ${styles.topContainer}`}>
