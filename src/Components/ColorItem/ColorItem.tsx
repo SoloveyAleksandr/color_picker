@@ -10,47 +10,26 @@ import { IColorItem } from "../../types";
 
 interface IColorItemProp {
   item: IColorItem,
-  index: number,
   setLock: (id: string) => void,
   copyHandler: (color: string) => void,
   changeColor: (id: string) => void,
   deleteHandler: (id: string) => void,
-  constraintsRef: React.RefObject<Element>,
 }
 
 const ColorItem: FC<IColorItemProp> = ({
   item,
-  index,
   setLock,
   copyHandler,
   changeColor,
   deleteHandler,
-  constraintsRef,
 }) => {
-  const [isdragged, setIsDragged] = useState(false);
 
   const isDark = tinycolor(item.color).isDark();
 
-  const itemRef: React.Ref<HTMLDivElement> = useRef(null);
-
-  const log = (e: any) => console.log(e);
-
   return (
-    <motion.div
-      dragConstraints={constraintsRef}
-      dragSnapToOrigin
-      drag={'x'}
-      onPanStart={() => setIsDragged(true)}
-      onPanEnd={() => setIsDragged(false)}
-      ref={itemRef}
-      //
-      //  если оффлет положительный прибавлять / отнимать
-      //
-      //
-      onDrag={(e, i) => log((itemRef.current?.offsetLeft || 0) - Math.abs(i.offset.x))}
+    <div
       style={{
         backgroundColor: item.color,
-        zIndex: isdragged ? 2 : 1,
       }}
       className={styles.wrapper}>
       <div className={`${styles.innerContainer} ${styles.topContainer}`}>
@@ -87,7 +66,7 @@ const ColorItem: FC<IColorItemProp> = ({
           }
         </button>
       </div>
-    </motion.div>
+    </div>
   )
 };
 

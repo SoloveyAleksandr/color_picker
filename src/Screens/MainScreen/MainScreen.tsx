@@ -112,7 +112,7 @@ const MainScreen: FC = () => {
   }
 
   const handlerDrag = () => {
-    
+
   }
 
   return (
@@ -153,7 +153,7 @@ const MainScreen: FC = () => {
       </div>
 
       <div className={styles.listWrapper}>
-        <motion.ul
+        <ul
           className={styles.colorList}
           ref={constraintsRef}>
           {
@@ -164,8 +164,6 @@ const MainScreen: FC = () => {
                 style={{ width: `calc(100% / ${colorList.length})`, minWidth: '160px' }}>
                 <ColorItem
                   item={item}
-                  index={index}
-                  constraintsRef={constraintsRef}
                   setLock={setLock}
                   copyHandler={copyHandler}
                   changeColor={changeColor}
@@ -173,7 +171,7 @@ const MainScreen: FC = () => {
               </li>
             ))
           }
-        </motion.ul>
+        </ul>
       </div>
     </div>
   )
