@@ -7,16 +7,31 @@ import tinycolor from "tinycolor2";
 import { AiOutlineLock, AiOutlineUnlock, AiOutlinePlus } from 'react-icons/ai';
 import { toggleLockState } from "../../services/toggleLockState";
 import { motion } from 'framer-motion';
-
-import styles from './MainScreen.module.scss';
+import { arrayMoveImmutable, arrayMoveMutable } from 'array-move';
 import { Color } from "../../services/classes";
 import { setRandomColor } from "../../services/setRandomColor";
+
+import styles from './MainScreen.module.scss';
 
 const MainScreen: FC = () => {
   const [colorList, setColorList] = useState<IColorItem[]>([]);
   const [allIsLocked, setAllIsLocked] = useState<boolean>(false);
   const [toastIsActive, setToastIsActive] = useState(false);
+  const [gradient, setGradient] = useState('');
   const constraintsRef = useRef(null);
+
+  const setRandomGradient = () => {
+    if (colorList.length >= 4) {
+      const gradientString = `
+      linear-gradient(90deg,
+      ${colorList[0].color} 10%, 
+      ${colorList[1].color} 35%,
+      ${colorList[2].color} 65%,
+      ${colorList[3].color} 90%
+      )`;
+      setGradient(gradientString);
+    }
+  }
 
   const getRandom = () => {
     // создаем массив если он пустой
@@ -50,6 +65,10 @@ const MainScreen: FC = () => {
       toggleLockForAll();
     }
   }, [allIsLocked])
+
+  useEffect(() => {
+    setRandomGradient();
+  }, [colorList])
 
   const setLock = (id: string) => {
     const index = colorList.findIndex(el => el.id === id);
@@ -86,6 +105,15 @@ const MainScreen: FC = () => {
     })
   };
 
+  const swap = (from: number, to: number) => {
+    const firstSwap = arrayMoveImmutable(colorList, from, to);
+    const secondSwap = arrayMoveImmutable(firstSwap, from, to);
+    setColorList(secondSwap);
+  }
+
+  const handlerDrag = () => {
+    
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -94,7 +122,9 @@ const MainScreen: FC = () => {
         <span>Copied!</span>
       </div>
 
-      <div className={styles.header}>
+      <div
+        className={styles.header}
+        style={{ background: gradient }}>
         <Container>
           <div className={styles.headerContainer}>
             <div className={styles.btnBox}>

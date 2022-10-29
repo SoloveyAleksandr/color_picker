@@ -40,8 +40,8 @@ const ColorItem: FC<IColorItemProp> = ({
       dragConstraints={constraintsRef}
       dragSnapToOrigin
       drag={'x'}
-      onDragStart={() => setIsDragged(true)}
-      onDragEnd={() => setIsDragged(false)}
+      onPanStart={() => setIsDragged(true)}
+      onPanEnd={() => setIsDragged(false)}
       ref={itemRef}
       //
       //  если оффлет положительный прибавлять / отнимать

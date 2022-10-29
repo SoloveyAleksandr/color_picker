@@ -9,7 +9,6 @@
 .header {
   width: 100%;
   padding: 15px 0;
-  border-bottom: 2px solid $white;
 
   &Container {
     display: flex;
@@ -31,6 +30,7 @@
     font-family: 'Jost';
     text-transform: uppercase;
     transition: .3s;
+    box-shadow: 4px 4px 3px 0px $black20;
 
     &:hover {
       opacity: 0.5;
