@@ -1,0 +1,29 @@
+@import '../../сonstant';
+
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list {
+  margin: 0;
+  border: 1px solid $white50;
+  border-radius: 8px;
+  background-color: $white20;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+
+  &Box {
+    margin: 5px 0;
+  }
+
+  &Item {
+    width: 200px;
+    height: 60px;
+    border-radius: 4px;
+  }
+}

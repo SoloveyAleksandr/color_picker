@@ -6,12 +6,12 @@ import { HiRefresh } from 'react-icons/hi';
 import tinycolor from "tinycolor2";
 import { AiOutlineLock, AiOutlineUnlock, AiOutlinePlus } from 'react-icons/ai';
 import { toggleLockState } from "../../services/toggleLockState";
-import { motion } from 'framer-motion';
-import { arrayMoveImmutable, arrayMoveMutable } from 'array-move';
 import { Color } from "../../services/classes";
 import { setRandomColor } from "../../services/setRandomColor";
+import { arrayMoveImmutable } from 'array-move';
 
 import styles from './MainScreen.module.scss';
+import { DragDropContext, Draggable, Droppable, DropResult, ResponderProvided } from "react-beautiful-dnd";
 
 const MainScreen: FC = () => {
   const [colorList, setColorList] = useState<IColorItem[]>([]);
@@ -19,6 +19,8 @@ const MainScreen: FC = () => {
   const [toastIsActive, setToastIsActive] = useState(false);
   const [gradient, setGradient] = useState('');
   const constraintsRef = useRef(null);
+
+  const { innerWidth: width, innerHeight: height } = window;
 
   const setRandomGradient = () => {
     if (colorList.length >= 4) {
@@ -105,15 +107,15 @@ const MainScreen: FC = () => {
     })
   };
 
-  const swap = (from: number, to: number) => {
-    const firstSwap = arrayMoveImmutable(colorList, from, to);
-    const secondSwap = arrayMoveImmutable(firstSwap, from, to);
-    setColorList(secondSwap);
-  }
-
-  const handlerDrag = () => {
-
-  }
+  const onDragEndHandler = (result: DropResult, provided: ResponderProvided) => {
+    if (!result.destination) {
+      return;
+    }
+    const start = result.source.index;
+    const finish = result.destination?.index;
+    const newList = arrayMoveImmutable(colorList, start, finish);
+    setColorList(newList);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -153,25 +155,45 @@ const MainScreen: FC = () => {
       </div>
 
       <div className={styles.listWrapper}>
-        <ul
-          className={styles.colorList}
-          ref={constraintsRef}>
-          {
-            colorList.map((item, index) => (
-              <li
-                key={item.id}
-                className={styles.colorItem}
-                style={{ width: `calc(100% / ${colorList.length})`, minWidth: '160px' }}>
-                <ColorItem
-                  item={item}
-                  setLock={setLock}
-                  copyHandler={copyHandler}
-                  changeColor={changeColor}
-                  deleteHandler={deleteColor} />
-              </li>
-            ))
-          }
-        </ul>
+        <DragDropContext onDragEnd={onDragEndHandler}>
+          <Droppable droppableId="colors" direction='horizontal'>
+            {(provided) => (
+              <ul
+                className={styles.colorList} {...provided.droppableProps} ref={provided.innerRef}>
+                {
+                  colorList.map((item, index) => (
+                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                      {(provided) => {
+                        const style = {
+                          width: `${width / colorList.length}px`,
+                          minWidth: '160px',
+                          ...provided.draggableProps.style,
+                        };
+                        return (
+                          <li
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                            className={styles.colorItem}
+                            style={style}
+                          >
+                            <ColorItem
+                              item={item}
+                              setLock={setLock}
+                              copyHandler={copyHandler}
+                              changeColor={changeColor}
+                              deleteHandler={deleteColor} />
+                          </li>
+                        )
+                      }}
+                    </Draggable>
+                  ))
+                }
+                {provided.placeholder}
+              </ul>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   )

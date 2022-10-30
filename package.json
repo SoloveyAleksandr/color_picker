@@ -52,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.1.2",
     "@types/uuid": "^8.3.4"
   }
 }
